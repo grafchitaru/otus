@@ -1,3 +1,17 @@
-FROM php:8.2-fpm-alpine3.16
+# Используем официальный образ PHP
+FROM php:7.4-fpm
 
-RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+# Устанавливаем необходимые пакеты
+RUN apt-get update && apt-get install -y nginx
+
+# Копируем конфигурационный файл для Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Копируем файлы приложения в рабочую директорию
+COPY index.php /var/www/html/index.php
+
+# Открываем порт 8000
+EXPOSE 8000
+
+# Запускаем Nginx и PHP-FPM
+CMD service nginx start && php-fpm
